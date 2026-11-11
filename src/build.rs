@@ -59,14 +59,18 @@ fn sign_sha256sums(path: &PathBuf) {
     let key_base64 = match std::env::var("TAURI_SIGNING_PRIVATE_KEY") {
         Ok(key) => key,
         Err(_) => {
-            println!("cargo:warning=TAURI_SIGNING_PRIVATE_KEY not set, skipping SHA256SUMS signing");
+            println!("cargo:warning=TAURI_SIGNING_PRIVATE_KEY not set, writing placeholder SHA256SUMS.sig");
+            let sig_path = path.with_extension("sig");
+            std::fs::write(&sig_path, "NOT SIGNED").unwrap();
             return;
         }
     };
     let password = match std::env::var("TAURI_SIGNING_PRIVATE_KEY_PASSWORD") {
         Ok(pwd) => pwd,
         Err(_) => {
-            println!("cargo:warning=TAURI_SIGNING_PRIVATE_KEY_PASSWORD not set, skipping SHA256SUMS signing");
+            println!("cargo:warning=TAURI_SIGNING_PRIVATE_KEY_PASSWORD not set, writing placeholder SHA256SUMS.sig");
+            let sig_path = path.with_extension("sig");
+            std::fs::write(&sig_path, "NOT SIGNED").unwrap();
             return;
         }
     };

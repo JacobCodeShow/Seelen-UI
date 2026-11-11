@@ -61,6 +61,8 @@ jobs:
             target/${{ steps.set-target.outputs.target }}/release/static/**/*
             target/${{ steps.set-target.outputs.target }}/release/*.exe
             target/${{ steps.set-target.outputs.target }}/release/*.dll
+            target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS
+            target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS.sig
             target/${{ steps.set-target.outputs.target }}/release/seelen_ui.pdb
           compression-level: 6
 
