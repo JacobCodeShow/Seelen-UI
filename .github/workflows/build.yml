@@ -53,6 +53,26 @@ jobs:
         shell: pwsh
         run: npx tauri build --ci --verbose --no-bundle --target ${{ steps.set-target.outputs.target }}
 
+      - name: Package portable zip
+        shell: pwsh
+        run: |
+          $target = "${{ steps.set-target.outputs.target }}"
+          $releaseDir = "target/$target/release"
+          $stagingDir = "$env:RUNNER_TEMP\Seelen-UI-portable"
+          New-Item -ItemType Directory -Force -Path $stagingDir | Out-Null
+          # Copy all exe and dll files
+          Copy-Item "$releaseDir\*.exe" "$stagingDir\"
+          Copy-Item "$releaseDir\*.dll" "$stagingDir\"
+          # Copy static assets
+          if (Test-Path "$releaseDir\static") {
+            Copy-Item -Recurse "$releaseDir\static" "$stagingDir\static"
+          }
+          # Create zip
+          $zipName = "Seelen-UI-$target-portable.zip"
+          Compress-Archive -Path "$stagingDir\*" -DestinationPath "$releaseDir\$zipName" -CompressionLevel Optimal
+          Remove-Item -Recurse -Force $stagingDir
+          echo "Created $zipName"
+
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
@@ -64,6 +84,7 @@ jobs:
             target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS
             target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS.sig
             target/${{ steps.set-target.outputs.target }}/release/seelen_ui.pdb
+            target/${{ steps.set-target.outputs.target }}/release/*-portable.zip
           compression-level: 6
 
   # ── Job 2: Bundle NSIS installer ───────────────────────────────────────
