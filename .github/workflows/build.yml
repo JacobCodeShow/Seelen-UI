@@ -67,6 +67,8 @@ jobs:
           if (Test-Path "$releaseDir\static") {
             Copy-Item -Recurse "$releaseDir\static" "$stagingDir\static"
           }
+          Copy-Item "$releaseDir\SHA256SUMS" "$stagingDir\"
+          Copy-Item "$releaseDir\SHA256SUMS.sig" "$stagingDir\"
           # Create zip
           $zipName = "Seelen-UI-$target-portable.zip"
           Compress-Archive -Path "$stagingDir\*" -DestinationPath "$releaseDir\$zipName" -CompressionLevel Optimal
