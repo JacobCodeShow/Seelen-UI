@@ -156,6 +156,7 @@ async fn setup(app_handle: &tauri::AppHandle<tauri::Wry>) -> Result<()> {
         utils::integrity::ensure_bundle_files_integrity(get_app_handle()).await
     ) {
         utils::integrity::show_bundle_integrity_dialog(get_app_handle());
+        ServicePipe::request_sync(SvcAction::Stop).log_error();
         return Err(err);
     }
 
