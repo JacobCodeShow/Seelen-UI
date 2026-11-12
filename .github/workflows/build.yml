@@ -78,7 +78,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
-          name: seelen-ui-${{ steps.set-target.outputs.target }}
+          name: build-binaries-${{ steps.set-target.outputs.target }}
           path: |
             target/${{ steps.set-target.outputs.target }}/release/static/**/*
             target/${{ steps.set-target.outputs.target }}/release/*.exe
@@ -86,8 +86,14 @@ jobs:
             target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS
             target/${{ steps.set-target.outputs.target }}/release/SHA256SUMS.sig
             target/${{ steps.set-target.outputs.target }}/release/seelen_ui.pdb
-            target/${{ steps.set-target.outputs.target }}/release/*-portable.zip
           compression-level: 6
+
+      - name: Upload portable archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: seelen-ui-${{ steps.set-target.outputs.target }}
+          path: target/${{ steps.set-target.outputs.target }}/release/*-portable.zip
+          compression-level: 0
 
   # ── Job 2: Bundle NSIS installer ───────────────────────────────────────
   bundle-installer:
@@ -110,7 +116,7 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v4
         with:
-          name: seelen-ui-${{ needs.build-binaries.outputs.target }}
+          name: build-binaries-${{ needs.build-binaries.outputs.target }}
           path: target/${{ needs.build-binaries.outputs.target }}/release
 
       - name: Clean old bundle folder
